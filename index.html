@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Movie Collection</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f0f0;
+      padding: 20px;
+    }
+
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+
+    #media-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+    }
+
+    .media-item {
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      padding: 15px;
+      width: 200px;
+      box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.1);
+      text-align: center;
+    }
+
+    .media-item img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 8px;
+    }
+
+    .media-item h3 {
+      margin: 10px 0 5px;
+      font-size: 18px;
+    }
+
+    .media-item p {
+      margin: 5px 0;
+      font-size: 14px;
+      color: #555;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>My Movie Collection</h1>
+  <div id="media-container"></div>
+
+  <script>
+    // JSON Data (Part 1)
+    const movieData = `
+    [
+      {
+        "title": "Inception",
+        "director": "Christopher Nolan",
+        "price": 13.99,
+        "image": "images/inception.jpg"
+      },
+      {
+        "title": "3 idiots",
+        "director": "Raju Hirani",
+        "price": 12.49,
+        "image": "images/3 idiots.jpg"
+      },
+      {
+        "title": "kgf",
+        "director": "prashant neel",
+        "price": 19.99,
+        "image": "images/kgf.jpg"
+      }
+    ]
+    `;
+
+    // Movie Class (Part 2)
+    class Movie {
+      #price;
+
+      constructor(title, director, price, image) {
+        this.title = title;
+        this.director = director;
+        this.image = image;
+        this.price = price; // triggers the setter
+      }
+
+      get price() {
+        return this.#price;
+      }
+
+      set price(value) {
+        if (value < 0) {
+          throw new Error("Price cannot be negative.");
+        }
+        this.#price = value;
+      }
+
+      toString() {
+        return `${this.title} by ${this.director}, $${this.price}`;
+      }
+
+      renderHTML() {
+        const container = document.createElement("div");
+        container.className = "media-item";
+
+        const img = document.createElement("img");
+        img.src = this.image;
+        img.alt = this.title;
+
+        const titleEl = document.createElement("h3");
+        titleEl.textContent = this.title;
+
+        const directorEl = document.createElement("p");
+        directorEl.textContent = `Director: ${this.director}`;
+
+        const priceEl = document.createElement("p");
+        priceEl.textContent = `Price: $${this.price.toFixed(2)}`;
+
+        container.appendChild(img);
+        container.appendChild(titleEl);
+        container.appendChild(directorEl);
+        container.appendChild(priceEl);
+
+        return container;
+      }
+    }
+
+    // Parse JSON & Display (Part 3)
+    const movieArray = JSON.parse(movieData);
+    const mediaContainer = document.getElementById("media-container");
+
+    movieArray.forEach(movie => {
+      const m = new Movie(movie.title, movie.director, movie.price, movie.image);
+      mediaContainer.appendChild(m.renderHTML());
+    });
+  </script>
+</body>
+</html>
